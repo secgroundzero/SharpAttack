@@ -150,34 +150,45 @@ namespace SharpAttack
             //APPLOCKER ENUMERATION
             Console.WriteLine("\n[+] Enumerating Applocker Config...");
             RegistryKey appLocker_config = registryKey.OpenSubKey("Software").OpenSubKey("Policies").OpenSubKey("Microsoft").OpenSubKey("Windows").OpenSubKey("SrpV2").OpenSubKey("Exe");
-      
+
+                if (appLocker_config != null)
+            {
                 for (int i = 0; i < appLocker_config.SubKeyCount; i++)
                 {
                     Console.WriteLine(appLocker_config.OpenSubKey(appLocker_config.GetSubKeyNames()[i]).GetValue("Value"));
                 }
+            }
+      
+                
 
      
             //POWERSHELL SCRIPT LOGGING ENUMERATION
             Console.WriteLine("\n[+] Enumerating PowerShell Environment Config...");
             RegistryKey scriptLog_config = registryKey.OpenSubKey("Software").OpenSubKey("Policies").OpenSubKey("Microsoft").OpenSubKey("Windows").OpenSubKey("PowerShell").OpenSubKey("ScriptBlockLogging");
-            var scLog = scriptLog_config.GetValue("EnableScriptBlockLogging");
-            if (scLog.ToString().Equals("1"))
+            if (scriptLog_config != null)
             {
-           
-                Console.WriteLine("\t[!] ScriptBlock Logging is enabled");
-            }
-            else Console.WriteLine("\t[-] ScriptBlock Logging is Not enabled");
+                var scLog = scriptLog_config.GetValue("EnableScriptBlockLogging");
+                if (scLog.ToString().Equals("1"))
+                {
 
+                    Console.WriteLine("\t[!] ScriptBlock Logging is enabled");
+                }
+                else Console.WriteLine("\t[-] ScriptBlock Logging is Not enabled");
+            }
             //POWERSHELL TRANSCRIPTION LOGGING
            
             RegistryKey transcriptLog_config = registryKey.OpenSubKey("Software").OpenSubKey("Policies").OpenSubKey("Microsoft").OpenSubKey("Windows").OpenSubKey("PowerShell").OpenSubKey("Transcription");
-            var tsLog = transcriptLog_config.GetValue("EnableTranscripting");
-            if (tsLog.ToString().Equals("1")) 
+            if (transcriptLog_config != null)
             {
-                Console.WriteLine("\t[!] Transcript Logging is enabled");
-            }
-            else Console.WriteLine("\t[-] Transcript Logging is Not enabled");
 
+
+                var tsLog = transcriptLog_config.GetValue("EnableTranscripting");
+                if (tsLog.ToString().Equals("1"))
+                {
+                    Console.WriteLine("\t[!] Transcript Logging is enabled");
+                }
+                else Console.WriteLine("\t[-] Transcript Logging is Not enabled");
+            }
 
             //POWERSHELL CONSTRAINED MODES ENUMERATION
             //1. Full Language
@@ -186,29 +197,31 @@ namespace SharpAttack
             //4. Constrained Language
             Console.WriteLine("\n[+] Enumerating PowerShell Constrained Config...");
             RegistryKey constrainLog_config = registryKey.OpenSubKey("System").OpenSubKey("CurrentControlSet").OpenSubKey("Control").OpenSubKey("Session Manager").OpenSubKey("Environment");
-            if (constrainLog_config.GetValue("_PSLockdownPolicy") != null)
+            if (constrainLog_config != null)
             {
-                var psPolicy = constrainLog_config.GetValue("_PSLockdownPolicy");
-                if (psPolicy.Equals("1"))
+                if (constrainLog_config.GetValue("_PSLockdownPolicy") != null)
                 {
-                    Console.WriteLine("\tFull Language Mode");
-                }
-                else if (psPolicy.Equals("2"))
-                {
-                    Console.WriteLine("\tFull Language Mode");
-                }
-                else if (psPolicy.Equals("3"))
-                {
-                    Console.WriteLine("\tNo Language Mode");
-                }
-                else  if (psPolicy.Equals("4"))
-                {
-                    Console.WriteLine("[!] Constrained Language Mode");
-                }
-                
-            }
-            else Console.WriteLine("\t[-] PSLockdownPolicy in not enabled");
+                    var psPolicy = constrainLog_config.GetValue("_PSLockdownPolicy");
+                    if (psPolicy.Equals("1"))
+                    {
+                        Console.WriteLine("\tFull Language Mode");
+                    }
+                    else if (psPolicy.Equals("2"))
+                    {
+                        Console.WriteLine("\tFull Language Mode");
+                    }
+                    else if (psPolicy.Equals("3"))
+                    {
+                        Console.WriteLine("\tNo Language Mode");
+                    }
+                    else if (psPolicy.Equals("4"))
+                    {
+                        Console.WriteLine("[!] Constrained Language Mode");
+                    }
 
+                }
+                else Console.WriteLine("\t[-] PSLockdownPolicy in not enabled");
+            }
 
             //ATTACHED DRIVES
             Console.WriteLine("\n[+] Enumerating Drives...");
