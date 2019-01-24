@@ -1,0 +1,6 @@
+C:\Users\Cylar\source\repos\SharpAttack\SharpAttack\bin\Debug\SharpAttack.exe
+C:\Users\Cylar\source\repos\SharpAttack\SharpAttack\bin\Debug\SharpAttack.pdb
+C:\Users\Cylar\source\repos\SharpAttack\SharpAttack\obj\Debug\SharpAttack.csprojAssemblyReference.cache
+C:\Users\Cylar\source\repos\SharpAttack\SharpAttack\obj\Debug\SharpAttack.csproj.CoreCompileInputs.cache
+C:\Users\Cylar\source\repos\SharpAttack\SharpAttack\obj\Debug\SharpAttack.exe
+C:\Users\Cylar\source\repos\SharpAttack\SharpAttack\obj\Debug\SharpAttack.pdb
