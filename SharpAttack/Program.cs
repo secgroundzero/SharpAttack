@@ -84,7 +84,7 @@ namespace SharpAttack
                     string processSearch = avproducts[a].Substring(0, avproducts[a].Length - 4);
                     if (procs[i].ProcessName.Equals(processSearch))
                     {
-                        Console.WriteLine("\t[!]Found AV Process: " + procs[i].ProcessName);
+                        Console.WriteLine("\t[!] Found AV Process: " + procs[i].ProcessName);
                     }
                 }
             }
@@ -106,16 +106,37 @@ namespace SharpAttack
             Console.WriteLine("\n[+] Enumerating Windows Defender Config...");
             RegistryKey folder_exclusions = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows Defender\Exclusions\Paths");
             Console.WriteLine("\tEnumerating Windows Defender Path Exclusions...");
-            if (folder_exclusions == null)
+            if (folder_exclusions != null)
             {
-                Console.WriteLine("No file exclusions specified");
+             
+                for (int i = 0; i < folder_exclusions.GetValueNames().Length; i++)
+                {
+                    Console.WriteLine("\t[+] "+folder_exclusions.GetValueNames()[i]);
+                }
+                Console.WriteLine();
             }
             //WINDOWS DEFENDER EXCLUSIONS
             Console.WriteLine("\tEnumerating Windows Defender Extensions Exclusions...");
             RegistryKey ext_exclusions = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows Defender\Exclusions\Extensions");
+           
             if (ext_exclusions == null)
             {
-                Console.WriteLine("No extensions exclusions specified");
+                Console.WriteLine("\tNo extensions exclusions specified");
+            }
+            else
+            {
+                if (ext_exclusions.GetValueNames().Length > 0)
+                {
+                    for (int i=0; i<ext_exclusions.GetValueNames().Length; i++)
+                    {
+                        Console.WriteLine("\t[+]"+ext_exclusions.GetValueNames()[i]);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("\t[-] No extensions exclusions specified.");
+                }
+                
             }
 
             //WINDOWS RECENT FILES
@@ -149,22 +170,35 @@ namespace SharpAttack
 
             //APPLOCKER ENUMERATION
             Console.WriteLine("\n[+] Enumerating Applocker Config...");
-            RegistryKey appLocker_config = registryKey.OpenSubKey("Software").OpenSubKey("Policies").OpenSubKey("Microsoft").OpenSubKey("Windows").OpenSubKey("SrpV2").OpenSubKey("Exe");
-
+            RegistryKey appLocker_config = registryKey.OpenSubKey(@"Software\Policies\Microsoft\Windows\SrpV2\Exe");
                 if (appLocker_config != null)
-            {
-                for (int i = 0; i < appLocker_config.SubKeyCount; i++)
                 {
-                    Console.WriteLine(appLocker_config.OpenSubKey(appLocker_config.GetSubKeyNames()[i]).GetValue("Value"));
+                    for (int i = 0; i < appLocker_config.SubKeyCount; i++)
+                    {
+                        Console.WriteLine(appLocker_config.OpenSubKey(appLocker_config.GetSubKeyNames()[i]).GetValue("Value"));
+                    }
                 }
-            }
-      
-                
 
-     
+            //CMD PROCESS CREATION ENUMERATION 
+            Console.WriteLine("\n[+] Enumerating CMD line auditing...");
+            RegistryKey cmd_audit = registryKey.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Policies\System\Audit");
+
+
+                 if (cmd_audit != null)
+                {
+                var cmdLog = cmd_audit.GetValue("ProcessCreationIncludeCmdLine_Enabled");
+                    if (cmdLog.Equals("1"))
+                    {
+                        Console.WriteLine("\t[!] CMD Logging is enabled");
+                    }
+                    else Console.WriteLine("\t[-] CMD Logging is Not enabled");
+                }
+            
+            
+
             //POWERSHELL SCRIPT LOGGING ENUMERATION
             Console.WriteLine("\n[+] Enumerating PowerShell Environment Config...");
-            RegistryKey scriptLog_config = registryKey.OpenSubKey("Software").OpenSubKey("Policies").OpenSubKey("Microsoft").OpenSubKey("Windows").OpenSubKey("PowerShell").OpenSubKey("ScriptBlockLogging");
+            RegistryKey scriptLog_config = registryKey.OpenSubKey(@"Software\Policies\Microsoft\Windows\Powershell\ScriptBlockLogging");
             if (scriptLog_config != null)
             {
                 var scLog = scriptLog_config.GetValue("EnableScriptBlockLogging");
@@ -176,12 +210,10 @@ namespace SharpAttack
                 else Console.WriteLine("\t[-] ScriptBlock Logging is Not enabled");
             }
             //POWERSHELL TRANSCRIPTION LOGGING
-           
-            RegistryKey transcriptLog_config = registryKey.OpenSubKey("Software").OpenSubKey("Policies").OpenSubKey("Microsoft").OpenSubKey("Windows").OpenSubKey("PowerShell").OpenSubKey("Transcription");
+
+            RegistryKey transcriptLog_config = registryKey.OpenSubKey(@"Software\Policies\Microsoft\Windows\PowerShell\Transcription");
             if (transcriptLog_config != null)
             {
-
-
                 var tsLog = transcriptLog_config.GetValue("EnableTranscripting");
                 if (tsLog.ToString().Equals("1"))
                 {
@@ -196,7 +228,7 @@ namespace SharpAttack
             //3. No Language
             //4. Constrained Language
             Console.WriteLine("\n[+] Enumerating PowerShell Constrained Config...");
-            RegistryKey constrainLog_config = registryKey.OpenSubKey("System").OpenSubKey("CurrentControlSet").OpenSubKey("Control").OpenSubKey("Session Manager").OpenSubKey("Environment");
+            RegistryKey constrainLog_config = registryKey.OpenSubKey(@"System\CurrentControlSet\Control\Session Manager\Environment");
             if (constrainLog_config != null)
             {
                 if (constrainLog_config.GetValue("_PSLockdownPolicy") != null)
@@ -237,12 +269,13 @@ namespace SharpAttack
             //LAPS
             Console.WriteLine("\n[+] Checking if LAPS is used...");
             string laps_path = @"C:\Program Files\LAPS\CSE\Admpwd.dll";
-            Console.WriteLine(File.Exists(laps_path) ? "\tLAPS is enabled" : "\tLAPS is not enabled");
+            Console.WriteLine(File.Exists(laps_path) ? "\t[!] LAPS is enabled" : "\t[-] LAPS is not enabled");
 
             Console.WriteLine("");
             Console.WriteLine("\n============================");
             Console.WriteLine("\n[*] All checks have finished");
             Console.WriteLine("\n============================");
+
             Console.ReadLine();
             
         }
