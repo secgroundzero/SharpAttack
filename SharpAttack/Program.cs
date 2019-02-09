@@ -180,7 +180,7 @@ namespace SharpAttack
                 }
 
             //CMD PROCESS CREATION ENUMERATION 
-            Console.WriteLine("\n[+] Enumerating CMD line auditing...");
+            /*Console.WriteLine("\n[+] Enumerating CMD line auditing...");
             RegistryKey cmd_audit = registryKey.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Policies\System\Audit");
 
 
@@ -194,7 +194,7 @@ namespace SharpAttack
                     else Console.WriteLine("\t[-] CMD Logging is Not enabled");
                 }
             
-            
+            */
 
             //POWERSHELL SCRIPT LOGGING ENUMERATION
             Console.WriteLine("\n[+] Enumerating PowerShell Environment Config...");
