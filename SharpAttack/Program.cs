@@ -179,23 +179,7 @@ namespace SharpAttack
                     }
                 }
 
-            //CMD PROCESS CREATION ENUMERATION 
-            /*Console.WriteLine("\n[+] Enumerating CMD line auditing...");
-            RegistryKey cmd_audit = registryKey.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Policies\System\Audit");
-
-
-                 if (cmd_audit != null)
-                {
-                var cmdLog = cmd_audit.GetValue("ProcessCreationIncludeCmdLine_Enabled");
-                    if (cmdLog.Equals("1"))
-                    {
-                        Console.WriteLine("\t[!] CMD Logging is enabled");
-                    }
-                    else Console.WriteLine("\t[-] CMD Logging is Not enabled");
-                }
             
-            */
-
             //POWERSHELL SCRIPT LOGGING ENUMERATION
             Console.WriteLine("\n[+] Enumerating PowerShell Environment Config...");
             RegistryKey scriptLog_config = registryKey.OpenSubKey(@"Software\Policies\Microsoft\Windows\Powershell\ScriptBlockLogging");
